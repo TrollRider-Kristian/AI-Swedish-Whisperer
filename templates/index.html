@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<div>
+    <p>{{prompt_response}}</p>
+    <form>
+        <input type="text" name="answer" required>
+        <button type="submit">Send Response</button>
+    </form>
+</div>
+{% endblock %}
