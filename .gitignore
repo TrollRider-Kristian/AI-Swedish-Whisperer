@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Raw data I copied in for testing.
+SuperLim-2-2.0.4/
+
+# Logging file because Flask can't print
+*.log

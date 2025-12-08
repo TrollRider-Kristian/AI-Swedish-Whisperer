@@ -1,13 +1,17 @@
 import json
 import ollama
+from sklearn.metrics import confusion_matrix
+
+SWEWIC_FILEPATH = "SuperLim-2-2.0.4/swewic/swewic_test.jsonl"
 
 def swewic_json_test():
     ollama_client = ollama.Client()
     # KRISTIAN_NOTE - They wrote the JSONL file in UTF-8 encoding to preserve the necessary Swedish vowels å, ä, and ö.
-    with open ("SuperLim-2-2.0.4/swewic/swewic_test.jsonl", 'r', encoding = "utf8") as swewic_file:
+    with open (SWEWIC_FILEPATH, 'r', encoding = "utf8") as swewic_file:
         swewic_list = load_swewic_list_from_file (swewic_file)
-        print (get_predicted_senses (swewic_list, ollama_client))
-        print (get_target_senses (swewic_list))
+        # KRISTIAN_NOTE - This line of code took roughly 5-10 minutes to run and shows that the LLM is roughly 60% accurate in terms of word senses.
+        # KRISTIAN_TODO - Find a way to integrate these tests and the Super-Lim files into AWS!
+        print (confusion_matrix (get_target_senses (swewic_list), get_predicted_senses (swewic_list, ollama_client), labels = ['same_sense', 'different_sense']))
 
 def load_swewic_list_from_file (swewic_file):
     # KRISTIAN_NOTE - A JSONL file contains multiple JSON objects, which need to be converted to a list and read one-by-one.

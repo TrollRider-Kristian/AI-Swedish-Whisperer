@@ -8,4 +8,5 @@ dependencies = [
     "flask>=3.1.2",
     "logging>=0.4.9.6",
     "ollama>=0.6.0",
+    "scikit-learn>=1.7.2",
 ]
