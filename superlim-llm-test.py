@@ -3,9 +3,10 @@ import ollama
 from sklearn.metrics import confusion_matrix
 
 SWEWIC_FILEPATH = "SuperLim-2-2.0.4/swewic/swewic_test.jsonl"
+SWEANALOGY_FILEPATH = "SuperLim-2-2.0.4/sweanalogy/sweanalogy_test.jsonl"
+ollama_client = ollama.Client()
 
 def swewic_json_test():
-    ollama_client = ollama.Client()
     # KRISTIAN_NOTE - They wrote the JSONL file in UTF-8 encoding to preserve the necessary Swedish vowels å, ä, and ö.
     with open (SWEWIC_FILEPATH, 'r', encoding = "utf8") as swewic_file:
         swewic_list = load_swewic_list_from_file (swewic_file)
@@ -37,5 +38,34 @@ def eval_sentence_pair_sense(ollama_client, given_word, first_sentence, second_s
 def get_target_senses (swewic_list):
     return [ swewic_list [ix] ['label'] for ix in range (len (swewic_list))]
 
+def sweanalogy_json_test():
+    with open (SWEANALOGY_FILEPATH, 'r', encoding = "utf8") as sweanalogy_file:
+        sweanalogy_list = load_sweanalogy_list_from_file (sweanalogy_file)
+        print (get_target_analogies (sweanalogy_list[0:10]))
+        print (get_predicted_analogies (sweanalogy_list[0:10], ollama_client))
+
+def load_sweanalogy_list_from_file (sweanalogy_file):
+    sweanalogy_data = list (sweanalogy_file)
+    return [ json.loads (sweanalogy_data [ix]) for ix in range ( len(sweanalogy_data)) ]
+
+def get_predicted_analogies (sweanalogy_list, ollama_client):
+    predictions = []
+    for word_pair in sweanalogy_list:
+        first_word = word_pair ['pair1_element1']
+        given_analogy = word_pair ['pair1_element2']
+        second_word = word_pair ['pair2_element1']
+        prediction = eval_analogy_pair (ollama_client, first_word, given_analogy, second_word)
+        predictions.append (prediction)
+    return predictions
+
+def eval_analogy_pair(ollama_client, first_word, given_analogy, second_word):
+    prompt = "For a given word: + " + second_word + ", find a word analogous to it in the same way that " + first_word + " is analogous to " + given_analogy +\
+        ".  Please respond with only a one-word answer."
+    return ollama_client.generate ("llama3.1", prompt).response
+
+def get_target_analogies (sweanalogy_list):
+    return [sweanalogy_list [ix] ['label'] for ix in range (len (sweanalogy_list)) ]
+
 if __name__ == "__main__":
-    swewic_json_test()
+    # swewic_json_test()
+    sweanalogy_json_test()
