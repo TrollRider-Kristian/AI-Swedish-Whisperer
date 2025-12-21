@@ -67,5 +67,5 @@ def get_target_analogies (sweanalogy_list):
     return [sweanalogy_list [ix] ['label'] for ix in range (len (sweanalogy_list)) ]
 
 if __name__ == "__main__":
-    # swewic_json_test()
+    swewic_json_test()
     sweanalogy_json_test()
