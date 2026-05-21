@@ -33,6 +33,9 @@ def get_predicted_senses (swewic_list, ollama_client):
 def eval_sentence_pair_sense(ollama_client, given_word, first_sentence, second_sentence):
     prompt = "For each test pair, predict if the word: " + given_word + " is being used in the same sense in the following two sentences: " +\
          first_sentence + second_sentence + "  Please only answer 'same_sense' or 'different_sense'."
+    # KRISTIAN_TODO - Give an example indicating what I want.  Check for nulls too.  Give the answer in a string format.  Check the data if anything is missing.
+    # Instructions on how to improve my prompts.  Translator / task.  Do's and dont's.  Output structure.  Examples.  Split up into functions and merge into a large prompt.
+    # Store the context as an agent.  Store the conversation log as a txt file.  S3 is good enough for now.
     return ollama_client.generate ("llama3.1", prompt).response
 
 def get_target_senses (swewic_list):
